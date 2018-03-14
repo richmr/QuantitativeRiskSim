@@ -17,12 +17,16 @@ class LossEvent:
     Impacts need to be nonzero and positive
     """
         
-    def __init__(self, userEventName, initProb = .15, initMaxImpact = 10000, initMinImpact = 5000, initCapMaxImpact = False):
+    def __init__(self, userEventName, probDist = .15, initMaxImpact = 10000, initMinImpact = 5000, initCapMaxImpact = False):
         self.EventName = userEventName
         self.Description = "Not set"
         self.impactDistroMean = 0
         self.impactDistroStdDev = 0
-        self.setProbabilityofOccurrence(initProb)
+        self.probDist = False
+        if callable(probDist):
+            self.probDist = probDist
+        else:
+            self.setProbabilityofOccurrence(probDist)
         self.setImpactBounds(initMaxImpact, initMinImpact, initCapMaxImpact)
         self.data = []
         
@@ -50,7 +54,13 @@ class LossEvent:
         """
         Returns true if the event occurs for this run
         """
-        if (rand() <= self.basicProbabilityofOccurrence):
+        chance = 0
+        if (self.probDist):
+            chance = self.probDist()
+        else:
+            chance = self.basicProbabilityofOccurrence
+            
+        if (rand() <= chance):
             return True
         else:
             return False
