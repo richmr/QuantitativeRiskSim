@@ -7,8 +7,10 @@ Created on Tue Jan 24 10:36:46 2017
 
 import LossEventClass
 import LossCurvePlot
-from numpy import savetxt, linspace, array, sort, save, load
+from numpy import savetxt, linspace, array, sort, save, load, count_nonzero, gradient
 from scipy.integrate import simps
+
+# global replot
 
 class LossSim:
     """
@@ -20,13 +22,15 @@ class LossSim:
         self.data = []
         self.labels = []
         self.minImpacts = []
+        self.plotCurves = LossCurvePlot.plotCurves
+        
 
     def attachEvent(self, newEvent):
         """
         Expects events that are at LossEventClass or a subclass
         """
         self.LossEvents.append(newEvent)
-        self.minImpacts.append(newEvent.minImpact)
+        #self.minImpacts.append(newEvent.minImpact)
         
     def run(self, iterations = 10000, aggregate = True, plot = True, presentation = False):
         """
@@ -51,6 +55,25 @@ class LossSim:
             eventnum += 1
             for i in range(iterations):
                 thisdata.append(event.run())
+            # self.minImpacts.append(min(thisdata))
+            # Can't do the above line because the min of every case is always zero.  We need the effective "useful" min
+            # Try getting the mean and stddev, then find LEC for stddev-3*mean
+            # for the record, stddev of a log-normal is kind of useless
+            # Hack to get a good minimal plot point from the data:
+            # Sort the data array
+            # Get the gradient of this array
+            # Count the non-zeros
+            # look for first non-zero value towards end of array from -nonzero count
+            # set minimum value to the value at sorted[-that location]
+            # No Bothans were harmed to make this hack
+            s_data = sort(thisdata)
+            gs_data = gradient(s_data)
+            index = count_nonzero(gs_data)
+            while (s_data[-index] == 0):
+                index -= 1
+            # print "[d] LossSim.run: Min impact = {}".format(s_data[-index])
+            self.minImpacts.append(s_data[-index])
+            
             self.data.append(thisdata)
             self.labels.append(event.EventName)
             print "[-] LossSim.run: Completed simulation of event \"{}\" (Event {} of {})".format(event.EventName, eventnum, len(self.LossEvents))  
@@ -62,6 +85,8 @@ class LossSim:
         if plot:
             minplot = min(self.minImpacts)
             LossCurvePlot.plotCurves(self.data, self.labels, presentation = presentation, minimum_plotted_impact = minplot)
+                        
+            print "[-] Use 'replot(minImpact, [presentation=True/False])' if you don't like the x range of the current plot."
         
     def plot(self, presentation=False):
         """
@@ -71,6 +96,10 @@ class LossSim:
         """
         LossCurvePlot.plotCurves(self.data, self.labels, presentation = presentation, minimum_plotted_impact = min(self.minImpacts))
         return
+    
+    def replot(self, minImpact, presentation=False):
+        self.minImpacts = [minImpact]
+        self.plot(presentation)
             
     def getResults(self):
         return self.data, self.labels

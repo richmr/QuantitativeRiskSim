@@ -18,7 +18,7 @@ from scipy import floor, log10
 def calcLossExceedance(data, p, forplot = True):
     """
     This will calculate the loss exceedence for a given set of data
-    and a percentile p
+    and a loss value p
     
     This expects a single column of data
     
@@ -33,11 +33,11 @@ def calcLossExceedance(data, p, forplot = True):
 #    countif = (data>p).sum()
 #    perc = countif/float(len(data))
     lenOfData = float(len(data))
-    
+#    
 #    if ((type(p) == int) or (type(p) == float)):
-#        lec = ((data>p).sum()/lenOfData)
-#    else:
-    
+#        lec = (([data>p]).sum()/lenOfData)
+#        if forplot:
+#            lec = lec * 100
            
     if forplot:
         lec = [((data>pi).sum()/lenOfData) * 100.0 for pi in p]

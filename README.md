@@ -5,7 +5,9 @@ This a pure python (2.7) code up of the quantitative risk simulation method pres
 
 http://www.howtomeasureanything.com/cybersecurity/
 
-See the "HomeComputerLossSim.py" example file for usage.
+See the "HomeComputerLossSim.py" example file for usage of my original code.
+
+See "HomeComputerLossSim2.py" and "decomposedRiskTest.py" for my improved risk definition classes.
 
 This is intended to run from a full Anaconda Python-based Data Science Platform
 
@@ -14,3 +16,4 @@ https://www.continuum.io/downloads
 It relies on several tools that are standard in that distribution.
 
 Good luck!
+
