@@ -80,6 +80,56 @@ class LogNormalValue(LossEvent2):
             if (loss > self.capMaxImpact): loss = self.capMaxImpact
         return loss
 
+class NormalValue(LossEvent2):
+    
+    def __init__(self, maxImpact, minImpact, capMaxImpact = False):
+        super(LogNormalValue, self).__init__("Basic LogNormal")
+        # Calculate the new distributions to speed up math later.  They don't vary with trial
+        # Catch bad values
+        if ((maxImpact < 0) or (minImpact < 0)):
+            raise Exception("LogNormalValue: impacts must be greater than 0")
+        
+        if (maxImpact < minImpact):
+            raise Exception("LogNormalValue: maxImpact must be greater than minImpact")
+            
+        if (capMaxImpact):
+            if (capMaxImpact < maxImpact):
+                raise Exception("LogNormalValue: capMaxImpact should be greater than maxImpact")
+                
+        self.impactDistroStdDev = (log(maxImpact) - log(minImpact))/3.29
+        self.impactDistroMean = (log(maxImpact) + log(minImpact))/2.0
+        self.capMaxImpact = capMaxImpact
+            
+    def run(self):
+        """
+        Always returns a value determined by the lognormal bounds
+        """
+        loss = stats.lognorm(self.impactDistroStdDev, scale=exp(self.impactDistroMean)).ppf(rand())
+        
+        if (self.capMaxImpact):
+            if (loss > self.capMaxImpact): loss = self.capMaxImpact
+        return loss
+
+class PowerLawValue(LossEvent2):
+    
+    def __init__(self, a, loc, scale, capMaxImpact = False):
+        super(PowerLawValue, self).__init__("Basic PowerLaw")
+        # Set the powerlaw object now.  It doesn't change between runs
+                     
+        self.powerdistro = stats.powerlaw(a=a, loc=loc, scale=scale)
+        self.capMaxImpact = capMaxImpact
+            
+    def run(self):
+        """
+        Always returns a value determined by the powerlaw.
+        Be careful, can return the occasional VERY large value
+        """
+        loss = self.powerdistro.rvs(1)[0]
+        
+        if (self.capMaxImpact):
+            if (loss > self.capMaxImpact): loss = self.capMaxImpact
+        return loss
+
 class ConstantValue(LossEvent2):
     """
     Simply returns the same value every time, as assigned
