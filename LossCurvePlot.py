@@ -127,10 +127,10 @@ def plotCurves(data_set, labels = [], presentation = False, x_label = "Impact ($
     maxX = 0
     maxY = 0
     minX = 10**floor(log10(minimum_plotted_impact))
-    print "[-] LossCurvePlot.plotCurves: Plotting {} event curves".format(len(data_set))
+    print("[-] LossCurvePlot.plotCurves: Plotting {} event curves".format(len(data_set)))
     for i in range(len(data_set)):
         data_arr = array(data_set[i])
-        print "[-] LossCurvePlot.plotCurves: Calculating {} of {} loss exceedance curves".format(i+1, len(data_set))
+        print("[-] LossCurvePlot.plotCurves: Calculating {} of {} loss exceedance curves".format(i+1, len(data_set)))
         p = linspace(0, max(data_arr), steps)
         lec = calcLossExceedance(data_arr, p)
         color = colors[i % len(colors)]
