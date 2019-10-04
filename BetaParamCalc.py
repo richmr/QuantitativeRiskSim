@@ -86,8 +86,8 @@ def timeWindowBetaCalc(timeframe, eventDates, startday, stopday = False, alpha_p
     # need to push stopday by sample size to ensure we get the range
     stopday_dt += sample_dt
     
-    print "{}".format(window_dt)
-    print "{}".format(stopday_dt)
+    print(("{}".format(window_dt)))
+    print(("{}".format(stopday_dt)))
     # begin the hunt
     windowStart_dt = startday_dt
     windowStop_dt = windowStart_dt + window_dt
@@ -107,7 +107,7 @@ def timeWindowBetaCalc(timeframe, eventDates, startday, stopday = False, alpha_p
         if (not wasAHit):
             # then it's a miss
             new_beta += 1
-        print "{} {} {}".format(windowStart_dt, windowStop_dt, wasAHit)
+        # print("{} {} {}".format(windowStart_dt, windowStop_dt, wasAHit))
         wasAHit = False
         windowStart_dt += sample_dt
         windowStop_dt = windowStart_dt + window_dt
@@ -116,7 +116,7 @@ def timeWindowBetaCalc(timeframe, eventDates, startday, stopday = False, alpha_p
 
 def BPCtest():
     new_alpha, new_beta = timeWindowBetaCalc('6 mo', ['1/17', '12/17'], startday='1/17', stopday='12/17', dtformat='%m/%y')
-    print "{}, {}".format(new_alpha, new_beta)
+    print(("{}, {}".format(new_alpha, new_beta)))
     
 def MailTest():
     eventData = ['8/26/2016', '9/2/2016', '1/13/2017', '3/2/2017', '3/30/2017', 
@@ -124,4 +124,4 @@ def MailTest():
                  '6/21/2018', '6/27/2018']
 
     new_alpha, new_beta = timeWindowBetaCalc('6 mo', eventData, startday='8/1/2016')
-    print "{}, {}".format(new_alpha, new_beta)
+    print(("{}, {}".format(new_alpha, new_beta)))

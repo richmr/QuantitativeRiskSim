@@ -112,7 +112,7 @@ def make_pdf(dist, params, size=10000):
 
     return pdf
 
-def do_fit(data, chartTitle = "Data", xlabel = u'$'):
+def do_fit(data, chartTitle = "Data", xlabel = '$'):
     """
     data = array of data
     chartTitle = Top line to be displayed on the generated charts
@@ -123,7 +123,7 @@ def do_fit(data, chartTitle = "Data", xlabel = u'$'):
     
     # Plot for comparison
     plt.figure(figsize=(12,8))
-    ax = data.plot(kind='hist', bins=50, normed=True, alpha=0.5, color=plt.rcParams['axes.color_cycle'][1])
+    ax = data.plot(kind='hist', bins=50, normed=True, alpha=0.5, color=plt.rcParams['axis.color_cycle'][1])
     # Save plot limits
     dataYLim = ax.get_ylim()
     
@@ -133,7 +133,7 @@ def do_fit(data, chartTitle = "Data", xlabel = u'$'):
     
     # Update plots
     ax.set_ylim(dataYLim)
-    ax.set_title(chartTitle +u'\n All Fitted Distributions')
+    ax.set_title(chartTitle +'\n All Fitted Distributions')
     ax.set_xlabel(xlabel)
     ax.set_ylabel('Frequency')
     
@@ -149,16 +149,16 @@ def do_fit(data, chartTitle = "Data", xlabel = u'$'):
     param_str = ', '.join(['{}={:0.2f}'.format(k,v) for k,v in zip(param_names, best_fir_paramms)])
     dist_str = '{}({})'.format(best_fit_name, param_str)
     
-    ax.set_title(chartTitle + u'\nBest fit distribution \n' + dist_str)
+    ax.set_title(chartTitle + '\nBest fit distribution \n' + dist_str)
     ax.set_xlabel(xlabel)
     ax.set_ylabel('Frequency')
 
 # test
 # Data taken from: https://compliancy-group.com/hipaa-fines-directory-year/
 
-#finesdata = np.array([3500000, 100000, 4348000, 475000, 2200000, 3200000, 5500000,
-#                      400000, 31000, 2500000, 2400000, 387200, 2300000, 239800, 
-#                      25000, 1550000, 3900000, 750000, 2200000, 650000, 2700000,
-#                      2750000, 5550000, 400000, 2140000, 650000])
-#        
-#do_fit(finesdata, "HIPAA Fines")
+finesdata = np.array([3500000, 100000, 4348000, 475000, 2200000, 3200000, 5500000,
+                      400000, 31000, 2500000, 2400000, 387200, 2300000, 239800, 
+                      25000, 1550000, 3900000, 750000, 2200000, 650000, 2700000,
+                      2750000, 5550000, 400000, 2140000, 650000])
+        
+do_fit(finesdata, "HIPAA Fines")

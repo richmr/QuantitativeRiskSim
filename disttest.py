@@ -32,5 +32,5 @@ def david(val):
 #for i in range(10):
 #    print david(lambda foo:uniform(1,5))
     
-print newloss()
-print newloss(dist=lambda what=1:uniform(1,5))
+print(newloss())
+print(newloss(dist=lambda what=1:uniform(1,5)))

@@ -112,7 +112,7 @@ def make_pdf(dist, params, size=10000):
 
     return pdf
 
-def do_fit(data, chartTitle = "Data", xlabel = u'$'):
+def do_fit(data, chartTitle = "Data", xlabel = '$'):
     """
     data = array of data
     chartTitle = Top line to be displayed on the generated charts
@@ -133,7 +133,7 @@ def do_fit(data, chartTitle = "Data", xlabel = u'$'):
     
     # Update plots
     ax.set_ylim(dataYLim)
-    ax.set_title(chartTitle +u'\n All Fitted Distributions')
+    ax.set_title(chartTitle +'\n All Fitted Distributions')
     ax.set_xlabel(xlabel)
     ax.set_ylabel('Frequency')
     
@@ -149,7 +149,7 @@ def do_fit(data, chartTitle = "Data", xlabel = u'$'):
     param_str = ', '.join(['{}={:0.2f}'.format(k,v) for k,v in zip(param_names, best_fir_paramms)])
     dist_str = '{}({})'.format(best_fit_name, param_str)
     
-    ax.set_title(chartTitle + u'\nBest fit distribution \n' + dist_str)
+    ax.set_title(chartTitle + '\nBest fit distribution \n' + dist_str)
     ax.set_xlabel(xlabel)
     ax.set_ylabel('Frequency')
 
