@@ -11,6 +11,7 @@ Though I've made it easy to use, I did NOT write this awesome code - mrich
 
 import numpy as np
 import matplotlib.pyplot as plt
+from cycler import cycler
 
 
 
@@ -123,7 +124,8 @@ def do_fit(data, chartTitle = "Data", xlabel = '$'):
     
     # Plot for comparison
     plt.figure(figsize=(12,8))
-    ax = data.plot(kind='hist', bins=50, normed=True, alpha=0.5, color=plt.rcParams['axis.color_cycle'][1])
+    plt.rc('axes', prop_cycle=(cycler('color', ['b', 'g', 'r', 'c', 'm', 'y', 'k'])))
+    ax = data.plot(kind='hist', bins=50, normed=True, alpha=0.5)
     # Save plot limits
     dataYLim = ax.get_ylim()
     
@@ -153,12 +155,3 @@ def do_fit(data, chartTitle = "Data", xlabel = '$'):
     ax.set_xlabel(xlabel)
     ax.set_ylabel('Frequency')
 
-# test
-# Data taken from: https://compliancy-group.com/hipaa-fines-directory-year/
-
-finesdata = np.array([3500000, 100000, 4348000, 475000, 2200000, 3200000, 5500000,
-                      400000, 31000, 2500000, 2400000, 387200, 2300000, 239800, 
-                      25000, 1550000, 3900000, 750000, 2200000, 650000, 2700000,
-                      2750000, 5550000, 400000, 2140000, 650000])
-        
-do_fit(finesdata, "HIPAA Fines")
