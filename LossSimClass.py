@@ -5,7 +5,7 @@ Created on Tue Jan 24 10:36:46 2017
 @author: MRICH
 """
 
-import LossEventClass
+import LossEventClassv2
 import LossCurvePlot
 from numpy import savetxt, linspace, array, sort, save, load, count_nonzero, gradient
 from scipy.integrate import simps
