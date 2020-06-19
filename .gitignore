@@ -3,3 +3,6 @@
 
 .spyproject/*
 *.pyc
+
+MPI/
+__pycache__/
