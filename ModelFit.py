@@ -154,4 +154,7 @@ def do_fit(data, chartTitle = "Data", xlabel = '$'):
     ax.set_title(chartTitle + '\nBest fit distribution \n' + dist_str)
     ax.set_xlabel(xlabel)
     ax.set_ylabel('Frequency')
+    
+    # Print the dist string for easy cut and paste
+    print("Best fit: scipy.stats.{}".format(dist_str))
 

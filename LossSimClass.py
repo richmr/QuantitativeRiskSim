@@ -9,6 +9,7 @@ import LossEventClassv2
 import LossCurvePlot
 from numpy import savetxt, linspace, array, sort, save, load, count_nonzero, gradient
 from scipy.integrate import simps
+import tqdm
 
 # global replot
 
@@ -47,7 +48,10 @@ class LossSim:
         self.data = []
         self.labels = []
         eventnum = 0
+        totalsims = len(self.LossEvents)*iterations # number of sim iterations
         # clear all the attached events first
+        progBar = tqdm.tqdm(total=totalsims, desc="Simulation Progress")
+        
         for event in self.LossEvents: event.reset()
         
         for event in self.LossEvents:
@@ -55,6 +59,7 @@ class LossSim:
             eventnum += 1
             for i in range(iterations):
                 thisdata.append(event.run())
+                progBar.update()
             # self.minImpacts.append(min(thisdata))
             # Can't do the above line because the min of every case is always zero.  We need the effective "useful" min
             # Try getting the mean and stddev, then find LEC for stddev-3*mean
@@ -76,8 +81,10 @@ class LossSim:
             
             self.data.append(thisdata)
             self.labels.append(event.EventName)
-            print("[-] LossSim.run: Completed simulation of event \"{}\" (Event {} of {})".format(event.EventName, eventnum, len(self.LossEvents)))  
-        
+            #newdesc = "Completed simulation of \"{}\" (Event {} of {})".format(event.EventName, eventnum, len(self.LossEvents))  
+            #progBar.set_description(desc=newdesc, refresh=True)
+            
+        progBar.close()
         if aggregate:
             self.labels.append("Total risk")
             self.data.append([sum(i) for i in zip(*self.data)])   

@@ -4,6 +4,13 @@ Created on Thu Jul 19 15:56:48 2018
 
 @author: mrich
 """
+import logging
+logger = logging.getLogger('BetaCalc')
+logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+formatter = logging.Formatter('%(name)s:%(levelname)s:%(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 import datetime as dt
 
@@ -44,6 +51,8 @@ def timeWindowBetaCalc(timeframe, eventDates, startday, stopday = False, alpha_p
         
     A sample call based on the scenario above looks like:
         new_alpha, new_beta = timeWindowBetaCalc('6 mo', ['1/17', '12/17'], startday='1/17', stopday='12/17', dtformat='%m/%y')
+    
+    I recommend using dates in month/year format (1/2020), and setting time frame as "mo" like '12 mo', for best results
     """
     new_alpha = alpha_prior
     new_beta = beta_prior
@@ -86,8 +95,8 @@ def timeWindowBetaCalc(timeframe, eventDates, startday, stopday = False, alpha_p
     # need to push stopday by sample size to ensure we get the range
     stopday_dt += sample_dt
     
-    print(("{}".format(window_dt)))
-    print(("{}".format(stopday_dt)))
+    #print(("{}".format(window_dt)))
+    #print(("{}".format(stopday_dt)))
     # begin the hunt
     windowStart_dt = startday_dt
     windowStop_dt = windowStart_dt + window_dt
@@ -98,7 +107,7 @@ def timeWindowBetaCalc(timeframe, eventDates, startday, stopday = False, alpha_p
             # these have been date ordered
             if (event_dt > windowStop_dt):
                 break
-            if ((event_dt >= windowStart_dt) and (event_dt < windowStop_dt)):
+            if ((event_dt >= windowStart_dt) and (event_dt <= windowStop_dt)):
                 # It hits
                 new_alpha += 1
                 wasAHit = True
@@ -113,6 +122,9 @@ def timeWindowBetaCalc(timeframe, eventDates, startday, stopday = False, alpha_p
         windowStop_dt = windowStart_dt + window_dt
     
     return new_alpha, new_beta
+
+def BetaMean(alpha, beta):
+    return alpha/(alpha+beta)
 
 def BPCtest():
     new_alpha, new_beta = timeWindowBetaCalc('6 mo', ['1/17', '12/17'], startday='1/17', stopday='12/17', dtformat='%m/%y')

@@ -145,6 +145,25 @@ class ConstantValue(LossEvent2):
         return self.flatValue
     
     
+    
+class GeneralStatsFxn(LossEvent2):
+    """
+    Accepts a function from scipy.stats and returns a random value from that
+    distribution each time
+    """
+    
+    def __init__(self, statfunc, capMaxImpact = False):
+        super(GeneralStatsFxn, self).__init__("General Stat")
+        self.statfunc = statfunc
+        self.capMaxImpact = capMaxImpact
+        
+    def run(self):
+        loss = self.statfunc.rvs(1)[0]
+        
+        if (self.capMaxImpact):
+            if (loss > self.capMaxImpact): loss = self.capMaxImpact
+        return loss
+    
 class basicLossEvent(LossEvent2):
     """
     This is the same as the original LossEvent Class

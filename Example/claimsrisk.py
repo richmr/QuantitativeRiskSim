@@ -51,9 +51,10 @@ def ClaimsData_ConfidentialityBreach():
 def TestRisk():
     sim = LossSim()
     sim.attachEvent(ClaimsData_ConfidentialityBreach())
-    sim.run(iterations = 10000, aggregate = False, plot = True, presentation = True)
+    sim.run(iterations = 1000000, aggregate = False, plot = True, presentation = True)
     return sim
 
-
+sim = TestRisk()
+sim.rankRisks()
 
     

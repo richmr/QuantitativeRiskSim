@@ -6,6 +6,7 @@ Created on Fri Mar 02 13:19:23 2018
 """
 
 from numpy.random import uniform
+from scipy import stats
 
 def bob():
     return uniform(1,5)
@@ -32,5 +33,12 @@ def david(val):
 #for i in range(10):
 #    print david(lambda foo:uniform(1,5))
     
-print(newloss())
-print(newloss(dist=lambda what=1:uniform(1,5)))
+#print(newloss())
+#print(newloss(dist=lambda what=1:uniform(1,5)))
+
+func = stats.recipinvgauss(mu=125859.19, loc=10000.00, scale=1692464.30)
+from LossEventClassv2 import GeneralStatsFxn
+
+gentest = GeneralStatsFxn(func)
+test = [gentest.run() for i in range(10)]
+print(test)
