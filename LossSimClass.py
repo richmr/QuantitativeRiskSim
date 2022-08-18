@@ -10,6 +10,7 @@ import LossCurvePlot
 from numpy import savetxt, linspace, array, sort, save, load, count_nonzero, gradient
 from scipy.integrate import simps
 import tqdm
+import pandas as pd
 
 # global replot
 
@@ -24,6 +25,8 @@ class LossSim:
         self.labels = []
         self.minImpacts = []
         self.plotCurves = LossCurvePlot.plotCurves
+        # Empyt dataframe as placeholder
+        self.totalLossDataframe = pd.DataFrame()
         
 
     def attachEvent(self, newEvent):
@@ -87,8 +90,28 @@ class LossSim:
         progBar.close()
         if aggregate:
             self.labels.append("Total risk")
-            self.data.append([sum(i) for i in zip(*self.data)])   
-        
+            self.data.append([sum(i) for i in zip(*self.data)])
+            # Populate the data frame
+            # https://stackoverflow.com/questions/25577352/plotting-cdf-of-a-pandas-series-in-python
+            # Define your series
+            s = pd.Series(self.data[-1], name = 'loss')
+            df = pd.DataFrame(s)             
+            # Get the frequency, PDF and CDF for each value in the series             
+            # Frequency
+            stats_df = df \
+                        .groupby('loss')['loss'] \
+                        .agg('count') \
+                        .pipe(pd.DataFrame) \
+                        .rename(columns = {'loss': 'frequency'})
+             
+            # PDF
+            stats_df['pdf'] = stats_df['frequency'] / sum(stats_df['frequency'])
+             
+            # CDF
+            stats_df['cdf'] = stats_df['pdf'].cumsum()
+            stats_df = stats_df.reset_index()
+            self.totalLossDataframe = stats_df
+            
         if plot:
             minplot = min(self.minImpacts)
             LossCurvePlot.plotCurves(self.data, self.labels, presentation = presentation, minimum_plotted_impact = minplot)
@@ -152,6 +175,20 @@ class LossSim:
                 results.append(thisresult)
                 
         return results
+    
+    def getMinAndMaxTotalLoss(self):
+        if self.totalLossDataframe.size == 0:
+            raise Exception("Can't use dataframe analysis unless run is called with aggregate=True")
+        # Ignores 0
+        minLoss = self.totalLossDataframe["loss"][1]
+        maxLoss = self.totalLossDataframe["loss"].max()
+        return minLoss, maxLoss
+    
+    def getProbabilityOfLossGreaterOrLessThan(self, lossValue):
+        if self.totalLossDataframe.size == 0:
+            raise Exception("Can't use dataframe analysis unless run is called with aggregate=True")
+        cdf_val = self.totalLossDataframe[self.totalLossDataframe["loss"] >= lossValue]["cdf"].min()
+        return 1.0-cdf_val
         
     def rankRisks(self, method=1, steps=5000):
         """
